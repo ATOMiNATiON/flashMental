@@ -10,7 +10,7 @@ class InputBox:
         self.rect = pygame.Rect(x, y, width, height)
         self.color = GRAY
         self.text = ""
-        self.font = pygame.font.Font(None, 32)
+        self.font = pygame.font.Font(None, 45)
         self.active = False
         self.left_text = left_text
         self.side_text = side_text
