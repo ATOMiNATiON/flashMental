@@ -1,5 +1,6 @@
 import pygame
 import button
+import time
 from generate import Problem
 from input_box import InputBox
 
@@ -14,22 +15,52 @@ pygame.display.set_caption("Flash Mental")
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 # add / sub display (actually playing now)
-def play_add_sub():
-    # setting game title
-    running = True
+def play_add_sub(numbers, digits, speed):
+    # Generating problems using the generate module
+    p1 = Problem() 
+    font = pygame.font.Font(None, 200)
+    question = p1.add_sub(int(numbers), int(digits))
+
+    # input box for answer
+    input_box = InputBox(600, 400, 140, 32, left_text="Answer")
 
     # buttons
     submit_button_img = pygame.image.load("../img/submit.png").convert_alpha()
     submit_button = button.Button(500, 500, submit_button_img, 0.16)
-    
-    # Game loop
-    while running:
-        
-        screen.fill("lightblue")
 
+    # Time settings for Flash mental
+    flash_duration = 1.0
+    flash_interval = int(speed)
+    last_flash_time = 0
+    current_number_index = 0
+    display_answer = False
+
+    # Game loop
+    running = True
+    while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+
+        current_time = int(time.time() * 1000)
+
+        # Start the Flashing numbers        
+        if not display_answer and current_time - last_flash_time >= flash_interval:
+            last_flash_time = current_time
+            if current_number_index < len(question):
+                current_number = question[current_number_index]
+                current_number_index += 1
+            else:
+                display_answer = True
+
+        screen.fill("lightblue")
+        
+        if display_answer:
+            pass
+        elif current_number is not None:
+            text = font.render(str(current_number), True, BLACK)
+            text_rect = text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+            screen.blit(text, text_rect)
 
         if submit_button.draw(screen):
             return
@@ -73,10 +104,15 @@ def add_sub_game():
         for box in input_boxes:
             box.draw(screen) 
 
+        # Getting inputs
+        digits = input_boxes[0].get_text()
+        numbers = input_boxes[1].get_text()
+        speed = input_boxes[2].get_text()
+
         if back_button.draw(screen):
             return
         if start_button.draw(screen):
-            play_add_sub() 
+            play_add_sub(numbers, digits, speed) 
 
         pygame.display.update()
     
