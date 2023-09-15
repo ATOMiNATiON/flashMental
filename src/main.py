@@ -23,7 +23,7 @@ def correct(answer):
 
     # font for the correct answer
     font = pygame.font.Font(None, 60)
-    correct_text = f"Correct, the answer was: {answer}!"
+    correct_text = f"Correct, the answer was: {answer:,}!"
     text_surface = font.render(correct_text, True, BLACK)
 
     running = True
@@ -51,7 +51,7 @@ def incorrect(answer):
 
     # font for the correct answer
     font = pygame.font.Font(None, 60)
-    correct_text = f"Incorrect, the answer was: {answer}"
+    correct_text = f"Incorrect, the answer was: {answer:,}"
     text_surface = font.render(correct_text, True, BLACK)
 
     running = True
@@ -105,7 +105,7 @@ def play_add_sub(numbers, digits, speed):
         if not display_answer and current_time - last_flash_time >= flash_interval:
             last_flash_time = current_time
             if current_number_index < len(question):
-                current_number = question[current_number_index]
+                current_number = f"{question[current_number_index]:,}"
                 current_number_index += 1
             else:
                 display_answer = True
@@ -122,7 +122,7 @@ def play_add_sub(numbers, digits, speed):
                 user_ans = input_box.get_text()
                 
                 if submit_button.draw(screen):
-                    if int(user_ans) == sum(question):
+                    if user_ans == f"{sum(question):,}":
                         correct(sum(question))
                         return
                     else:
@@ -192,10 +192,104 @@ def add_sub_game():
         pygame.display.update()
     
     pygame.quit()
+
+# Start multiplication game
+def play_mult(num1, num2):
+    # generate the problem
+    p2 = Problem()
+    question = p2.mult(int(num1), int(num2))
+
+    # displaying text settings
+    font = pygame.font.Font(None, 200)
+    text = f"{question[0]:,} x {question[1]:,}"    
+    text_surface = font.render(text, True, BLACK)
+    text_x = (SCREEN_WIDTH - text_surface.get_width()) // 2
+    text_y = (SCREEN_HEIGHT - text_surface.get_height()) // 2
+
+    # input box for answer
+    input_box = InputBox(600, 450, 140, 50, left_text="Answer")
+
+    # buttons
+    submit_button_img = pygame.image.load("../img/submit.png").convert_alpha()
+    submit_button = button.Button(500, 500, submit_button_img, 0.16)
+    
+    # show new screen
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            input_box.handle_event(event) 
+        
+        screen.fill('lightblue')
+
+        # display question        
+        screen.blit(text_surface, (text_x, text_y)) 
+
+        # input box & handling the inputs
+        input_box.update()
+        input_box.draw(screen)
+        user_ans = input_box.get_text()
+
+        if submit_button.draw(screen):
+            answer = int(question[0]) * int(question[1])
+            if user_ans == f"{answer:,}":
+                correct(answer)
+                return
+            else:
+                incorrect(answer)
+                return
+        
+        pygame.display.update()
+
+    pygame.quit() 
         
 # mult game menu
 def mult_game():
-    pass
+    # setting game title
+    pygame.display.set_caption("Multiplication")
+    running = True
+
+    # create a "back button" & "start button" instance
+    back_button_img = pygame.image.load("../img/back.png").convert_alpha()
+    start_button_img = pygame.image.load("../img/start.png").convert_alpha()
+    back_button = button.Button(20, 500, back_button_img, 0.16)
+    start_button = button.Button(900, 500, start_button_img, 0.16)
+
+    # create input boxes
+    input_boxes = [
+        InputBox(600, 100, 140, 32, left_text="size of 1st number"),
+        InputBox(600, 200, 140, 32, left_text="size of 2nd number"),
+    ]
+    
+    # Creates a setup page for the game inputs
+    while running:
+        screen.fill("lightblue")
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            for box in input_boxes:
+                box.handle_event(event)
+        
+        for box in input_boxes:
+            box.update()
+
+        for box in input_boxes:
+            box.draw(screen) 
+
+        # Getting inputs
+        num1 = input_boxes[0].get_text()
+        num2 = input_boxes[1].get_text()
+
+        if back_button.draw(screen):
+            return
+        if start_button.draw(screen):
+            play_mult(num1, num2)
+
+        pygame.display.update()
+    
+    pygame.quit()
 
 # div game menu
 def div_game():
@@ -236,7 +330,7 @@ def main():
         if add_sub_btn.draw(screen):
             add_sub_game()
         if mult_btn.draw(screen):
-            print("mult")
+            mult_game()
         if div_btn.draw(screen):
             print("div")
 
