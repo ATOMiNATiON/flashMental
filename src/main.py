@@ -291,9 +291,102 @@ def mult_game():
     
     pygame.quit()
 
+# Start multiplication game
+def play_div(num1, num2):
+    # generate the problem
+    p2 = Problem()
+    question = p2.div(int(num1), int(num2))
+
+    # displaying text settings
+    font = pygame.font.Font(None, 200)
+    text = f"{question[0]:,} ÷ {question[1]:,}"    
+    text_surface = font.render(text, True, BLACK)
+    text_x = (SCREEN_WIDTH - text_surface.get_width()) // 2
+    text_y = (SCREEN_HEIGHT - text_surface.get_height()) // 2
+
+    # input box for answer
+    input_box = InputBox(600, 450, 140, 50, left_text="Answer")
+
+    # buttons
+    submit_button_img = pygame.image.load("../img/submit.png").convert_alpha()
+    submit_button = button.Button(500, 500, submit_button_img, 0.16)
+    
+    # show new screen
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            input_box.handle_event(event) 
+        
+        screen.fill('lightblue')
+
+        # display question        
+        screen.blit(text_surface, (text_x, text_y)) 
+
+        # input box & handling the inputs
+        input_box.update()
+        input_box.draw(screen)
+        user_ans = input_box.get_text()
+
+        if submit_button.draw(screen):
+            answer = int(int(question[0]) / int(question[1]))
+            if user_ans == f"{answer:,}":
+                correct(answer)
+                return
+            else:
+                incorrect(answer)
+                return
+        
+        pygame.display.update()
+
+
 # div game menu
 def div_game():
-    pass
+    # setting game title
+    pygame.display.set_caption("Division")
+    running = True
+
+    # create a "back button" & "start button" instance
+    back_button_img = pygame.image.load("../img/back.png").convert_alpha()
+    start_button_img = pygame.image.load("../img/start.png").convert_alpha()
+    back_button = button.Button(20, 500, back_button_img, 0.16)
+    start_button = button.Button(900, 500, start_button_img, 0.16)
+
+    # create input boxes
+    input_boxes = [
+        InputBox(600, 100, 140, 32, left_text="size of 1st number"),
+        InputBox(600, 200, 140, 32, left_text="size of 2nd number"),
+    ]
+    
+    # Creates a setup page for the game inputs
+    while running:
+        screen.fill("lightblue")
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            for box in input_boxes:
+                box.handle_event(event)
+        
+        for box in input_boxes:
+            box.update()
+
+        for box in input_boxes:
+            box.draw(screen) 
+
+        # Getting inputs
+        num1 = input_boxes[0].get_text()
+        num2 = input_boxes[1].get_text()
+
+        if back_button.draw(screen):
+            return
+        if start_button.draw(screen):
+            play_div(num1, num2)
+
+        pygame.display.update()
+    
+    pygame.quit()
 
 # main menu
 def main():
@@ -332,8 +425,7 @@ def main():
         if mult_btn.draw(screen):
             mult_game()
         if div_btn.draw(screen):
-            print("div")
-
+            div_game()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
