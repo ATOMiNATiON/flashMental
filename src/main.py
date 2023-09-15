@@ -14,6 +14,63 @@ pygame.init()
 pygame.display.set_caption("Flash Mental")
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
+# CORRECT PAGE
+def correct(answer):
+    
+    # okay button
+    okay_button_img = pygame.image.load("../img/okay.png").convert_alpha()
+    okay_button = button.Button(500, 300, okay_button_img, 0.16)
+
+    # font for the correct answer
+    font = pygame.font.Font(None, 60)
+    correct_text = f"Correct, the answer was: {answer}!"
+    text_surface = font.render(correct_text, True, BLACK)
+
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+        screen.fill('lightblue') 
+
+        screen.blit(text_surface, (300, 300))
+
+        if okay_button.draw(screen):
+            return
+        
+        pygame.display.update()
+
+    pygame.quit() 
+
+# INCORRECT PAGE
+def incorrect(answer):
+    # okay button
+    okay_button_img = pygame.image.load("../img/okay.png").convert_alpha()
+    okay_button = button.Button(500, 300, okay_button_img, 0.16)
+
+    # font for the correct answer
+    font = pygame.font.Font(None, 60)
+    correct_text = f"Incorrect, the answer was: {answer}"
+    text_surface = font.render(correct_text, True, BLACK)
+
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+        screen.fill('lightblue') 
+
+        screen.blit(text_surface, (300, 300))
+
+        if okay_button.draw(screen):
+            return
+        
+        pygame.display.update()
+
+    pygame.quit() 
+
 # add / sub display (actually playing now)
 def play_add_sub(numbers, digits, speed):
     # Generating problems using the generate module
@@ -22,7 +79,7 @@ def play_add_sub(numbers, digits, speed):
     question = p1.add_sub(int(numbers), int(digits))
 
     # input box for answer
-    input_box = InputBox(600, 400, 140, 32, left_text="Answer")
+    input_box = InputBox(600, 400, 140, 50, left_text="Answer")
 
     # buttons
     submit_button_img = pygame.image.load("../img/submit.png").convert_alpha()
@@ -56,14 +113,32 @@ def play_add_sub(numbers, digits, speed):
         screen.fill("lightblue")
         
         if display_answer:
-            pass
+            while True:
+                for event in pygame.event.get():
+                    input_box.handle_event(event)
+
+                input_box.update()
+                input_box.draw(screen)
+                user_ans = input_box.get_text()
+                
+                if submit_button.draw(screen):
+                    if int(user_ans) == sum(question):
+                        correct(sum(question))
+                        return
+                    else:
+                        incorrect(sum(question))
+                        return
+
+                pygame.display.update()
+            pygame.quit()
+
         elif current_number is not None:
             text = font.render(str(current_number), True, BLACK)
             text_rect = text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
             screen.blit(text, text_rect)
 
-        if submit_button.draw(screen):
-            return
+        #if submit_button.draw(screen):
+        #    return
 
         pygame.display.update()
 
@@ -140,7 +215,14 @@ def main():
     div_btn = button.Button(450, 500, div_img, 0.16)
 
     # create a font object for the menu title
+    font = pygame.font.Font(None, 36)
     title_font = pygame.font.Font(None, 60)
+    copyright_text = "Copyright © Adam Wu 2023"
+    
+    # Render the copyright text
+    cp_right_surface = font.render(copyright_text, True, BLACK)
+    cp_right_rect = cp_right_surface.get_rect()
+    cp_right_rect.bottomleft = (10, SCREEN_HEIGHT - 10)
 
     running = True
     while running:
@@ -149,6 +231,7 @@ def main():
         # Render the menu title text
         title_text = title_font.render("Flash Mental Math Menu", True, BLACK)
         screen.blit(title_text, (400, 50))
+        screen.blit(cp_right_surface, cp_right_rect)
 
         if add_sub_btn.draw(screen):
             add_sub_game()
