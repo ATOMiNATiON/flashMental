@@ -1,5 +1,7 @@
 import pygame
 import button
+import os
+import sys
 import time
 from generate import Problem
 from input_box import InputBox
@@ -158,9 +160,9 @@ def add_sub_game():
 
     # create input boxes
     input_boxes = [
-        InputBox(600, 100, 140, 32, left_text="# of digits"),
-        InputBox(600, 200, 140, 32, left_text="# of numbers"),
-        InputBox(600, 300, 140, 32, left_text="Speed (ms)"),
+        InputBox(600, 200, 140, 32, left_text="# of digits"),
+        InputBox(600, 300, 140, 32, left_text="# of numbers"),
+        InputBox(600, 400, 140, 32, left_text="Speed (ms)"),
     ]
     
     # Creates a setup page for the game inputs
@@ -258,8 +260,8 @@ def mult_game():
 
     # create input boxes
     input_boxes = [
-        InputBox(600, 100, 140, 32, left_text="size of 1st number"),
-        InputBox(600, 200, 140, 32, left_text="size of 2nd number"),
+        InputBox(600, 300, 140, 32, left_text="size of 1st number"),
+        InputBox(600, 400, 140, 32, left_text="size of 2nd number"),
     ]
     
     # Creates a setup page for the game inputs
@@ -355,8 +357,8 @@ def div_game():
 
     # create input boxes
     input_boxes = [
-        InputBox(600, 100, 140, 32, left_text="size of 1st number"),
-        InputBox(600, 200, 140, 32, left_text="size of 2nd number"),
+        InputBox(600, 300, 140, 32, left_text="size of 1st number"),
+        InputBox(600, 400, 140, 32, left_text="size of 2nd number"),
     ]
     
     # Creates a setup page for the game inputs
@@ -390,6 +392,8 @@ def div_game():
 
 # main menu
 def main():
+    
+    print("Copyright © Adam Wu 2023\nFlash Mental Math!\nHave Fun!")
 
     # load button images
     add_sub_img = pygame.image.load('../img/add_sub.png').convert_alpha()
