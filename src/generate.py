@@ -11,10 +11,18 @@ class Problem:
         """
         dig = int("9" * digits)
         num = random.randint(-dig, dig)
-        if len(str(abs(num))) == digits:
-            return num
+
+        # If digits == 1, make sure it is not 0
+        if digits == 1:
+            if len(str(abs(num))) == digits and num != 0:
+                return num
+            else:
+                return self._dig_gen(digits)
         else:
-            return self._dig_gen(digits)
+            if len(str(abs(num))) == digits:
+                return num
+            else:
+                return self._dig_gen(digits)
 
     def _pos_gen(self, digits):
         """     
