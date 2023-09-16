@@ -1,7 +1,5 @@
 import pygame
 import button
-import os
-import sys
 import time
 from generate import Problem
 from input_box import InputBox
@@ -122,8 +120,8 @@ def play_add_sub(numbers, digits, speed):
                 input_box.update()
                 input_box.draw(screen)
                 user_ans = input_box.get_text()
-                
-                if submit_button.draw(screen):
+                filled = user_ans != ""                
+                if submit_button.draw(screen) and filled:
                     if user_ans == f"{sum(question):,}":
                         correct(sum(question))
                         return
@@ -164,6 +162,11 @@ def add_sub_game():
         InputBox(600, 300, 140, 32, left_text="# of numbers"),
         InputBox(600, 400, 140, 32, left_text="Speed (ms)"),
     ]
+
+    # font for displaying instructions
+    font = pygame.font.Font(None, 60)
+    correct_text = f"Please fill in blanks to start"
+    text_surface = font.render(correct_text, True, BLACK)
     
     # Creates a setup page for the game inputs
     while running:
@@ -181,14 +184,21 @@ def add_sub_game():
         for box in input_boxes:
             box.draw(screen) 
 
+        # draw instruction
+        screen.blit(text_surface, (350, 100))
+
         # Getting inputs
         digits = input_boxes[0].get_text()
         numbers = input_boxes[1].get_text()
         speed = input_boxes[2].get_text()
 
+        # check if they are valid inputs
+        empty = ""
+        filled = (digits != empty) and (numbers != empty) and (speed != empty)
+
         if back_button.draw(screen):
             return
-        if start_button.draw(screen):
+        if start_button.draw(screen) and filled:
             play_add_sub(numbers, digits, speed) 
 
         pygame.display.update()
@@ -232,8 +242,9 @@ def play_mult(num1, num2):
         input_box.update()
         input_box.draw(screen)
         user_ans = input_box.get_text()
+        filled = user_ans != ""
 
-        if submit_button.draw(screen):
+        if submit_button.draw(screen) and filled:
             answer = int(question[0]) * int(question[1])
             if user_ans == f"{answer:,}":
                 correct(answer)
@@ -251,6 +262,11 @@ def mult_game():
     # setting game title
     pygame.display.set_caption("Multiplication")
     running = True
+
+    # font for displaying instructions
+    font = pygame.font.Font(None, 60)
+    correct_text = f"Please fill in blanks to start"
+    text_surface = font.render(correct_text, True, BLACK)
 
     # create a "back button" & "start button" instance
     back_button_img = pygame.image.load("../img/back.png").convert_alpha()
@@ -280,13 +296,20 @@ def mult_game():
         for box in input_boxes:
             box.draw(screen) 
 
+        # Give out instructions
+        screen.blit(text_surface, (350, 100))
+
         # Getting inputs
         num1 = input_boxes[0].get_text()
         num2 = input_boxes[1].get_text()
 
+        # check if they are valid inputs
+        empty = ""
+        filled = (num1 != empty) and (num2 != empty)
+
         if back_button.draw(screen):
             return
-        if start_button.draw(screen):
+        if start_button.draw(screen) and filled:
             play_mult(num1, num2)
 
         pygame.display.update()
@@ -330,8 +353,9 @@ def play_div(num1, num2):
         input_box.update()
         input_box.draw(screen)
         user_ans = input_box.get_text()
+        filled = user_ans != ""
 
-        if submit_button.draw(screen):
+        if submit_button.draw(screen) and filled:
             answer = int(int(question[0]) / int(question[1]))
             if user_ans == f"{answer:,}":
                 correct(answer)
@@ -355,6 +379,11 @@ def div_game():
     back_button = button.Button(20, 500, back_button_img, 0.16)
     start_button = button.Button(900, 500, start_button_img, 0.16)
 
+    # font for displaying instructions
+    font = pygame.font.Font(None, 60)
+    correct_text = f"Please fill in blanks to start"
+    text_surface = font.render(correct_text, True, BLACK)
+
     # create input boxes
     input_boxes = [
         InputBox(600, 300, 140, 32, left_text="size of 1st number"),
@@ -377,13 +406,20 @@ def div_game():
         for box in input_boxes:
             box.draw(screen) 
 
+        # Give out instructions
+        screen.blit(text_surface, (350, 100))
+
         # Getting inputs
         num1 = input_boxes[0].get_text()
         num2 = input_boxes[1].get_text()
 
+        # check if they are valid inputs
+        empty = ""
+        filled = (num1 != empty) and (num2 != empty)
+
         if back_button.draw(screen):
             return
-        if start_button.draw(screen):
+        if start_button.draw(screen) and filled:
             play_div(num1, num2)
 
         pygame.display.update()
