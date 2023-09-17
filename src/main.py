@@ -13,9 +13,11 @@ BLACK = (0, 0, 0)
 pygame.init()
 pygame.display.set_caption("Flash Mental")
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+icon = pygame.image.load('../img/icon.png')
+pygame.display.set_icon(icon)
 
 # CORRECT PAGE
-def correct(answer):
+def correct(answer, mult=False):
     
     # okay button
     okay_button_img = pygame.image.load("../img/okay.png").convert_alpha()
@@ -23,7 +25,11 @@ def correct(answer):
 
     # font for the correct answer
     font = pygame.font.Font(None, 60)
+    padding = 2
     correct_text = f"Correct, the answer was: {answer:,}!"
+    if mult:
+        correct_text = f"Correct, the answer was: {answer:0{padding},}!"
+        
     text_surface = font.render(correct_text, True, BLACK)
 
     running = True
@@ -44,14 +50,17 @@ def correct(answer):
     pygame.quit() 
 
 # INCORRECT PAGE
-def incorrect(answer):
+def incorrect(answer, mult=False):
     # okay button
     okay_button_img = pygame.image.load("../img/okay.png").convert_alpha()
     okay_button = button.Button(500, 300, okay_button_img, 0.16)
 
     # font for the correct answer
     font = pygame.font.Font(None, 60)
-    correct_text = f"Incorrect, the answer was: {answer:,}"
+    padding = 2
+    correct_text = f"Incorrect, the answer was: {answer:,}!"
+    if mult:
+        correct_text = f"Incorrect, the answer was: {answer:0{padding},}!"
     text_surface = font.render(correct_text, True, BLACK)
 
     running = True
@@ -246,11 +255,12 @@ def play_mult(num1, num2):
 
         if submit_button.draw(screen) and filled:
             answer = int(question[0]) * int(question[1])
-            if user_ans == f"{answer:,}":
-                correct(answer)
+            padding = 2
+            if user_ans == f"{answer:0{padding},}":
+                correct(answer, mult=True)
                 return
             else:
-                incorrect(answer)
+                incorrect(answer, mult=True)
                 return
         
         pygame.display.update()
