@@ -438,7 +438,6 @@ def div_game():
 
 # main menu
 def main():
-    
     print("Copyright © Adam Wu 2023\nFlash Mental Math!\nHave Fun!")
 
     # load button images
@@ -463,7 +462,7 @@ def main():
 
     running = True
     while running:
-
+        pygame.display.set_caption("Flash Mental Math Menu")
         screen.fill("lightblue")
         # Render the menu title text
         title_text = title_font.render("Flash Mental Math Menu", True, BLACK)
