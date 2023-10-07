@@ -23,18 +23,17 @@ class Problem:
                 return num
             else:
                 return self._dig_gen(digits)
+        
 
     def _pos_gen(self, digits):
         """     
         Generates a positive integer that n digits long,
         given digits.
         """
-        dig = int("9" * digits)
-        num = random.randint(1, dig)
-        if len(str(num)) == digits:
-            return num
-        else:
-            return self._pos_gen(digits)
+        min_num = 10 ** (digits - 1)
+        max_num = (10 ** digits) - 1
+        num = random.randint(min_num, max_num)
+        return num if num >= min_num else num + min_num
 
     def add_sub(self, numbers, digits):
         """
@@ -74,8 +73,8 @@ class Problem:
         """
         n1 = self._pos_gen(num1)
         n2 = self._pos_gen(num2)
-        if n1 % n2 == 0:
-            return [n1, n2]
-        else:
-            return self.div(num1, num2)
-        
+        while (n1 % n2 != 0):
+            n1 = self._pos_gen(num1)
+            n2 = self._pos_gen(num2)
+            
+        return [n1, n2]
